@@ -1,9 +1,8 @@
 name: flutter_starter_cli
 description: A command-line application to initialize Flutter projects with predefined configurations.
 version: 1.0.0
-repository: https://github.com/your_username/flutter_starter_cli
-homepage: https://github.com/your_username/flutter_starter_cli
-issue_tracker: https://github.com/your_username/flutter_starter_cli/issues
+repository: https://github.com/thisisWoe/flutter_generator_cli.git
+homepage: https://github.com/thisisWoe/flutter_generator_cli.git
 license: MIT
 
 environment:

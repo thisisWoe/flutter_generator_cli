@@ -7,7 +7,8 @@ Future<void> main(List<String> arguments) async {
   var cli = CLI(commandRunner: RealCommandRunner());
 
   try {
-    await cli.checkFlutterInstallation();
+    String dartPath = await cli.checkDartInstallation();
+    String flutterPath = await cli.checkFlutterInstallation();
     await cli.runFlutterDoctor();
     await cli.checkVeryGoodCLI();
     String? projectName = await cli.createFlutterProject();

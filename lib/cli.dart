@@ -8,12 +8,55 @@ class CLI {
 
   CLI({required this.commandRunner});
 
-  Future<void> checkFlutterInstallation() async {
+  Future<String> checkDartInstallation() async {
+    await checkCommandInstallation(
+      'dart',
+      ['--version'],
+      'Follow the instructions at https://flutter.dev/docs/get-started/install',
+    );
+    String? dartPath = await findCommandPath('dart');
+    if (dartPath != null) {
+      print('Dart is installed at: $dartPath');
+      return dartPath;
+    } else {
+      print('Could not find the path to the Dart executable.');
+      throw Exception('Could not find the path to the Dart executable.');
+    }
+  }
+
+  Future<String?> findCommandPath(String command) async {
+    ProcessResult result;
+    if (Platform.isWindows) {
+      // Su Windows, utilizziamo il comando 'where'
+      result = await Process.run('where', [command]);
+    } else {
+      // Su sistemi Unix-like, utilizziamo il comando 'which'
+      result = await Process.run('which', [command]);
+    }
+
+    if (result.exitCode == 0) {
+      // Il comando è stato trovato, restituiamo il percorso
+      return result.stdout.toString().trim();
+    } else {
+      // Comando non trovato
+      return null;
+    }
+  }
+
+  Future<String> checkFlutterInstallation() async {
     await checkCommandInstallation(
       'flutter',
       ['--version'],
       'Follow the instructions at https://flutter.dev/docs/get-started/install',
     );
+    String? flutterPath = await findCommandPath('flutter');
+    if (flutterPath != null) {
+      print('Flutter is installed at: $flutterPath');
+      return flutterPath;
+    } else {
+      print('Could not find the path to the Flutter executable.');
+      throw Exception('Could not find the path to the Flutter executable.');
+    }
   }
 
   Future<void> runFlutterDoctor() async {
