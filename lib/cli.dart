@@ -169,7 +169,8 @@ class CLI {
     }
 
     // Chiedi una descrizione del progetto
-    stdout.write('If you want, enter a custom description for your project (optional): ');
+    stdout.write(
+        'If you want, enter a custom description for your project (optional): ');
     String? projectDescription = stdin.readLineSync() ?? '';
 
     // Chiedi un org del progetto
@@ -233,7 +234,8 @@ class CLI {
     var projectDirectory = Directory(projectName);
 
     if (!projectDirectory.existsSync()) {
-      print('The project directory "$projectName" does not exist. Cannot add dependencies.');
+      print(
+          'The project directory "$projectName" does not exist. Cannot add dependencies.');
       return;
     }
 
@@ -250,26 +252,33 @@ class CLI {
       // Lista dei pacchetti da offrire all'utente
       final packages = [
         {'name': 'go_router', 'description': 'Routing for Flutter apps'},
-        {'name': 'json_serializable', 'description': 'JSON serialization support'},
+        {
+          'name': 'json_serializable',
+          'description': 'JSON serialization support'
+        },
         {'name': 'dio', 'description': 'HTTP client for Dart'},
       ];
 
       bool dependenciesAdded = false;
 
       for (var package in packages) {
-        stdout.write('Would you like to add "${package['name']}" (${package['description']})? (y/N): ');
+        stdout.write(
+            'Would you like to add "${package['name']}" (${package['description']})? (y/N): ');
         String? response = stdin.readLineSync();
 
         if (response != null && response.toLowerCase() == 'y') {
-          final loadingIndicator = LoadingIndicator(label: 'Adding package: ${package['name']}');
+          final loadingIndicator =
+              LoadingIndicator(label: 'Adding package: ${package['name']}');
           loadingIndicator.start();
 
           try {
             // Esegui il comando 'dart pub add package_name' nella directory del progetto
-            var result = await commandRunner.run('dart', ['pub', 'add', package['name']!]);
+            var result = await commandRunner
+                .run('dart', ['pub', 'add', package['name']!]);
 
             if (result.exitCode == 0) {
-              print('\nPackage "${package['name']}" has been added successfully!');
+              print(
+                  '\nPackage "${package['name']}" has been added successfully!');
               dependenciesAdded = true;
             } else {
               print('\nError adding package "${package['name']}".');
@@ -284,7 +293,8 @@ class CLI {
 
       // Se sono state aggiunte dipendenze, esegui 'flutter pub get'
       if (dependenciesAdded) {
-        final loadingIndicator = LoadingIndicator(label: 'Running flutter pub get');
+        final loadingIndicator =
+            LoadingIndicator(label: 'Running flutter pub get');
         loadingIndicator.start();
 
         try {
@@ -304,6 +314,67 @@ class CLI {
     } finally {
       // Ripristina la directory originale
       Directory.current = originalDirectory;
+    }
+  }
+
+  Future<void> createComponentMVVM(String? nameComponent) async {
+    // controllo se è scritto in snake case
+
+    if (nameComponent != null && nameComponent.isNotEmpty) {
+      String snakeCase = toSnakeCase(nameComponent);
+    } else {
+      throw Exception('The name of the component is required.');
+    }
+  }
+
+  String toSnakeCase(String input) {
+    // Verifica se la stringa è già in snake_case (nessuna lettera maiuscola)
+    if (!RegExp(r'[A-Z]').hasMatch(input)) {
+      return input;
+    }
+
+    // Divide la stringa alle lettere maiuscole e inserisce un underscore prima di ciascuna
+    final splitted = input.replaceAllMapped(
+      RegExp(r'([A-Z])'),
+      (Match m) => '_${m.group(0)}',
+    );
+
+    // Converte tutto in minuscolo e rimuove eventuali underscore iniziali
+    final snakeCase = splitted.toLowerCase().replaceFirst(RegExp(r'^_+'), '');
+
+    return snakeCase;
+  }
+
+  Future<void> _createRepository(String path) async {
+    // Ex: lib/utils
+    final directory = Directory(path);
+
+    if (await directory.exists()) {
+      print('The folder "${directory.path}" already exists.');
+    } else {
+      try {
+        await directory.create(recursive: true);
+        print('The folder has been created: ${directory.path}');
+      } catch (e) {
+        print('Error during the creation of the folder: $e');
+      }
+    }
+  }
+
+  Future<void> _createDartFile(String filePath, String content) async {
+    // Ex: lib/utils/helper.dart
+    final file = File(filePath);
+
+    if (await file.exists()) {
+      print('The file "${file.path}" already exists.');
+    } else {
+      try {
+        await file.create(recursive: true);
+        await file.writeAsString(content);
+        print('The file has been created: ${file.path}');
+      } catch (e) {
+        print('Error during the creation of the file: $e');
+      }
     }
   }
 }
