@@ -12,7 +12,20 @@ Future<void> main(List<String> arguments) async {
     await cli.runFlutterDoctor();
     await cli.checkVeryGoodCLI();
     String? projectName = await cli.createFlutterProject();
-    await cli.addDependencies(projectName: projectName);
+    await cli.addDependencies(
+      projectName: projectName,
+    );
+    String path = await cli.createMVVMArchitecture(
+      projectName: projectName!,
+    );
+    await cli.createComponentMVVM(
+      pathLib: path,
+      nameComponent: 'home',
+      nameModel: 'post',
+      isBuildingState: true,
+    );
+    await cli.initializeApp(projectName: projectName);
+    // await cli.modifyBootstrapFile(projectName: projectName);
     print('Process completed!');
   } catch (e) {
     // print(e);
