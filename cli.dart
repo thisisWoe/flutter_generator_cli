@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter_starter_cli/command_runner.dart';
+import 'package:flutter_starter_cli/command_executor.dart';
 import 'package:flutter_starter_cli/loading_indicator.dart';
 
 class CLI {
-  final CommandRunner commandRunner;
+  final CommandExecutor commandExecutor;
 
-  CLI({required this.commandRunner});
+  CLI({required this.commandExecutor});
 
   Future<String> checkDartInstallation() async {
     await checkCommandInstallation(
@@ -64,7 +64,7 @@ class CLI {
     final LoadingIndicator loadingIndicator =
         LoadingIndicator(label: 'Running flutter doctor...');
     loadingIndicator.start();
-    var doctorResult = await commandRunner.run('flutter', ['doctor']);
+    var doctorResult = await commandExecutor.run('flutter', ['doctor']);
     print('\n${doctorResult.stdout}');
 
     var successMessages = [
@@ -102,7 +102,7 @@ class CLI {
         LoadingIndicator(label: 'Checking for $command');
     loadingIndicator.start();
     // await Future.delayed(Duration(seconds: 3));
-    var result = await commandRunner.run(command, arguments);
+    var result = await commandExecutor.run(command, arguments);
     if (result.exitCode == 0) {
       print('\n$command is installed: ${result.stdout}');
     } else {
@@ -208,7 +208,7 @@ class CLI {
       }
 
       // Esegui il comando
-      var result = await commandRunner.run('very_good', arguments);
+      var result = await commandExecutor.run('very_good', arguments);
 
       if (result.exitCode == 0) {
         print('\nThe project "$projectName" has been successfully created!');
@@ -273,7 +273,7 @@ class CLI {
 
           try {
             // Esegui il comando 'dart pub add package_name' nella directory del progetto
-            var result = await commandRunner
+            var result = await commandExecutor
                 .run('dart', ['pub', 'add', package['name']!]);
 
             if (result.exitCode == 0) {
@@ -298,7 +298,7 @@ class CLI {
         loadingIndicator.start();
 
         try {
-          var result = await commandRunner.run('flutter', ['pub', 'get']);
+          var result = await commandExecutor.run('flutter', ['pub', 'get']);
 
           if (result.exitCode == 0) {
             print('\nDependencies have been fetched successfully!');

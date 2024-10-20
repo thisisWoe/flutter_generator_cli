@@ -1,6 +1,6 @@
 import 'dart:io';
 
-class Creator {
+class FileManager {
   Future<void> createRepository(String path) async {
     // Ex: lib/utils
     final directory = Directory(path);

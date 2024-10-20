@@ -1,5 +1,8 @@
+import 'package:flutter_starter_cli/string_utils.dart';
+import 'package:flutter_starter_cli/utils.dart';
+
 class Launcher {
-  static String homeView({required projectName}) {
+  static String componentViewFirstLaunch({required String projectName}) {
     return '''
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -51,10 +54,47 @@ class _HomeViewState extends ConsumerState<HomeView> {
   }
 }
 
-      ''';
+    ''';
   }
 
-  static String homeViewModel({required projectName}) {
+  static String componentView({
+    required String projectName,
+    required String nameComponent,
+    required String providerName,
+  }) {
+    return '''
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:$projectName/di/providers.dart';
+
+class ${StringUtils.capitalizeFirst(nameComponent)}View extends ConsumerStatefulWidget {
+  const ${StringUtils.capitalizeFirst(nameComponent)}View({super.key});
+
+  @override
+  ConsumerState<${StringUtils.capitalizeFirst(nameComponent)}View> createState() => _${StringUtils.capitalizeFirst(nameComponent)}ViewState();
+}
+
+class _${StringUtils.capitalizeFirst(nameComponent)}ViewState extends ConsumerState<${StringUtils.capitalizeFirst(nameComponent)}View> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final $providerName}ViewModel = ref.watch($providerName}ViewModelProvider);
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('${StringUtils.capitalizeFirst(nameComponent)} View'),
+      ),
+    );
+  }
+}
+    ''';
+  }
+
+  static String componentViewModelFirstLaunch({required String projectName}) {
     return '''
 import 'package:flutter/material.dart';
 
@@ -95,6 +135,19 @@ class HomeViewModel extends ChangeNotifier {
     ''';
   }
 
+  static String componentViewModel({
+    required String projectName,
+    required String nameComponent,
+  }) {
+    return '''
+import 'package:flutter/material.dart';
+
+class ${StringUtils.capitalizeFirst(nameComponent)}ViewModel extends ChangeNotifier {
+
+}
+    ''';
+  }
+
   static String provider({required projectName}) {
     return '''
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -107,15 +160,15 @@ final homeViewModelProvider = ChangeNotifierProvider<HomeViewModel>((ref) {
     ''';
   }
 
-  static String postModel({required projectName}) {
+  static String postModel({required modelName}) {
     return '''
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
-class PostModel {
+class ${StringUtils.capitalizeFirst(modelName)}Model {
   final int id;
 
-  const PostModel({
+  const ${StringUtils.capitalizeFirst(modelName)}Model({
     required this.id,
   });
 }
@@ -375,4 +428,8 @@ class NavigationBarWidget extends StatelessWidget {
 
     ''';
   }
+
+  static String bootstrap = '''
+  runApp(ProviderScope(child: builder() as Widget));
+''';
 }

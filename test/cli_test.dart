@@ -1,19 +1,19 @@
 import 'dart:io';
 
-import 'package:flutter_starter_cli/cli.dart';
-import 'package:flutter_starter_cli/command_runner.dart';
+import 'package:flutter_starter_cli/flutter_project_manager.dart';
+import 'package:flutter_starter_cli/command_executor.dart';
 import 'package:test/test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockCommandRunner extends Mock implements CommandRunner {}
+class MockCommandRunner extends Mock implements CommandExecutor {}
 
 void main() {
   late MockCommandRunner mockCommandRunner;
-  late CLI cli;
+  late FlutterProjectManager cli;
 
   setUp(() {
     mockCommandRunner = MockCommandRunner();
-    cli = CLI(commandRunner: mockCommandRunner);
+    cli = FlutterProjectManager(commandExecutor: mockCommandRunner);
   });
 
   group('checkFlutterInstallation', () {

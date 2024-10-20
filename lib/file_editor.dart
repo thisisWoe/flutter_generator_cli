@@ -1,6 +1,6 @@
 import 'dart:io';
 
-class FileModifier {
+class FileEditor {
   /// Sostituisce una riga specifica in un file Dart.
   ///
   /// [filePath] è il percorso del file da modificare.

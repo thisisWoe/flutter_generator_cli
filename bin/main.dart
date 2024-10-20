@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:flutter_starter_cli/cli.dart';
-import 'package:flutter_starter_cli/command_runner.dart';
+import 'package:flutter_starter_cli/flutter_project_manager.dart';
+import 'package:flutter_starter_cli/command_executor.dart';
 
 Future<void> main(List<String> arguments) async {
-  var cli = CLI(commandRunner: RealCommandRunner());
+  var cli = FlutterProjectManager(commandExecutor: RealCommandExecutor());
 
   try {
     String dartPath = await cli.checkDartInstallation();
@@ -21,7 +21,7 @@ Future<void> main(List<String> arguments) async {
     await cli.createComponentMVVM(
       pathLib: path,
       nameComponent: 'home',
-      nameModel: 'post',
+      modelName: 'post',
       isBuildingState: true,
     );
     await cli.initializeApp(projectName: projectName);

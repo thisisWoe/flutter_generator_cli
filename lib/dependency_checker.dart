@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:flutter_starter_cli/command_runner.dart';
+import 'package:flutter_starter_cli/command_executor.dart';
 import 'package:flutter_starter_cli/loading_indicator.dart';
 
-class InstallationChecker {
-  final CommandRunner commandRunner;
+class DependencyChecker {
+  final CommandExecutor commandExecutor;
 
-  InstallationChecker({required this.commandRunner});
+  DependencyChecker({required this.commandExecutor});
 
   Future<String> checkDartInstallation(
       // {required CommandRunner commandRunner,}
@@ -38,7 +38,7 @@ class InstallationChecker {
         LoadingIndicator(label: 'Checking for $command');
     loadingIndicator.start();
     // await Future.delayed(Duration(seconds: 3));
-    var result = await commandRunner.run(command, arguments);
+    var result = await commandExecutor.run(command, arguments);
     if (result.exitCode == 0) {
       print('\n$command is installed: ${result.stdout}');
     } else {
@@ -93,5 +93,28 @@ class InstallationChecker {
       arguments: ['--version'],
       installInstructions: 'dart pub global activate very_good_cli',
     );
+  }
+
+  Future<void> runFlutterDoctor() async {
+    final LoadingIndicator loadingIndicator =
+    LoadingIndicator(label: 'Running flutter doctor...');
+    loadingIndicator.start();
+    var doctorResult = await commandExecutor.run('flutter', ['doctor']);
+    print('\n${doctorResult.stdout}');
+
+    var successMessages = [
+      'No issues found!',
+      'Nessun problema riscontrato!',
+    ];
+
+    if (doctorResult.exitCode == 0 &&
+        successMessages.any((msg) => doctorResult.stdout.contains(msg))) {
+      print('All necessary tools are installed.');
+    } else {
+      print('Some issues were found. Please resolve them before proceeding:');
+      print(doctorResult.stdout);
+      throw Exception('Issues detected by flutter doctor');
+    }
+    loadingIndicator.stop();
   }
 }
